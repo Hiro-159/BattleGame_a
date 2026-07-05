@@ -36,12 +36,24 @@ public class Main {
 			return gameMap;
 		}
 		
-		static void showMap(int[][] map ,int[][] enemyData) {
+		static void showMap(int[][] map ,int[][] enemyData, int[][] itemData) {
 			//マップの表示をする処理//
 			for (int i = 0; i < map.length; i++) {
 				for (int j = 0; j < map[i].length; j++) {
 					if (map[i][j] == 0) {
-						System.out.print("-");
+						boolean isItem = false;
+						for (int k = 0; k < itemData.length; k++) {
+							if (itemData[k][0] == i && itemData[k][1] == j && itemData[k][3] == 1) {
+								isItem = true;
+								break;
+							}
+						}
+						if (isItem) {
+							System.out.print("$");
+							map[i][j] = 4;
+						} else {
+							System.out.print("-");
+						}
 					} else if (map[i][j] == 1) {
 						System.out.print("@");
 					} else if (map[i][j] == 2) {
@@ -62,7 +74,7 @@ public class Main {
 			}
 		}
 		
-		static void movePoint(int[][] gameMap,String key,int[] playerData ,int[][] enemyData ,Scanner stdIn) {
+		static void movePoint(int[][] gameMap,String key,int[] playerData ,int[][] enemyData ,Scanner stdIn, int[][] itemData) {
 			//プレイヤーの位置を求める処理//
 			int Px = 0;
 			int Py = 0;
@@ -93,7 +105,7 @@ public class Main {
 					gameMap[Px-1][Py] = 1;
 					playerData[0] = Px-1;
 				} else if (Px-1 >= 0 && gameMap[Px-1][Py] == 4) {
-					healPlayer(playerData, 15);
+					useItem(itemData, Px-1,Py,playerData);
 					gameMap[Px][Py] = 0;
 					gameMap[Px-1][Py] = 1;
 					playerData[0] = Px-1;
@@ -115,7 +127,7 @@ public class Main {
 					playerData[0] = Px+1;
 				} 
 				else if (Px+1 < gameMap.length && gameMap[Px+1][Py] == 4) {
-					healPlayer(playerData, 15);
+					useItem(itemData, Px+1,Py,playerData);
 					gameMap[Px][Py] = 0;
 					gameMap[Px+1][Py] = 1;
 					playerData[0] = Px+1;
@@ -137,7 +149,7 @@ public class Main {
 					playerData[1] = Py+1;
 				}
 				else if (Py+1 < gameMap[Px].length && gameMap[Px][Py+1] == 4) {
-					healPlayer(playerData, 15);
+					useItem(itemData, Px,Py+1,playerData);
 					gameMap[Px][Py] = 0;
 					gameMap[Px][Py+1] = 1;
 					playerData[1] = Py+1;
@@ -159,7 +171,7 @@ public class Main {
 					playerData[1] = Py-1;
 				}
 				else if (Py-1 >= 0 && gameMap[Px][Py-1] == 4) {
-					healPlayer(playerData, 15);
+					useItem(itemData, Px,Py-1,playerData);
 					gameMap[Px][Py] = 0;
 					gameMap[Px][Py-1] = 1;
 					playerData[1] = Py-1;
@@ -799,7 +811,7 @@ public class Main {
 		}
 		
 		static int[][] randomSetItem (int[][] gameMap, int ItemCount) {
-			int[][] ItemData = new int[ItemCount][3];	//{x,y,mode}
+			int[][] ItemData = new int[ItemCount][4];	//{x,y,mode,A}
 			for (int i = 0; i < ItemCount;) {
 				Random rand = new Random();
 				int Ix = rand.nextInt(gameMap.length);
@@ -809,6 +821,7 @@ public class Main {
 					ItemData[i][0] = Ix;
 					ItemData[i][1] = Iy;
 					ItemData[i][2] = 0;	//仮のモード
+					ItemData[i][3] = 1; //1;使用可, 0;使用済
 					i++;
 				} else {
 					continue;
@@ -821,11 +834,39 @@ public class Main {
 		
 		static void showItemData(int[][] itemData) {
 			System.out.println("-----------------");
-			System.out.println("x :y :M");
+			System.out.println("x :y :type");
 			for (int i = 0; i < itemData.length; i++) {
-				System.out.printf("%2d,%2d,%2d\n",itemData[i][0],itemData[i][1],itemData[i][2]);
+				System.out.printf("%2d,%2d,%4d, ",itemData[i][0],itemData[i][1],itemData[i][2]);
+				if (itemData[i][3] == 1) {
+					System.out.println("使用可");
+				} else {
+					System.out.println("使用済");
+				}
 			}
 			System.out.println("-----------------");
+		}
+		
+		static void useItem(int[][] itemData, int Ix, int Iy, int[] playerData) {
+			//アイテムの番号を求める//
+			int itemNumber = -1;
+			for (int i = 0; i < itemData.length; i++) {
+				if (itemData[i][0] == Ix && itemData[i][1] == Iy) {
+					itemNumber = i;
+					break;
+				}
+			}
+			//アイテムを使用する//
+			if (itemData[itemNumber][3] == 1) {
+				if (itemData[itemNumber][2] == 0) {
+					healPlayer(playerData, 10);
+				}
+				//
+				//ここに他のアイテムの効果を追加
+				//
+				itemData[itemNumber][3] = 0;
+			} else {
+				return;
+			}
 		}
 		
 		public static void main(String[] args) {
@@ -868,7 +909,7 @@ public class Main {
 			int[][] ItemData = randomSetItem(gameMap, itemCount);
 			
 			System.out.printf("HP:%d\n",playerData[2]);
-			showMap(gameMap,enemyData);
+			showMap(gameMap,enemyData,ItemData);
 			boolean gameLoop = true;
 			String space = stdIn.nextLine();
 			System.out.print(">");
@@ -897,7 +938,7 @@ public class Main {
 					keyIn = stdIn.nextLine();
 				}
 				else {
-					movePoint(gameMap, keyIn, playerData, enemyData, stdIn);
+					movePoint(gameMap, keyIn, playerData, enemyData, stdIn, ItemData);
 					moveEnemyMulti(gameMap,playerData ,enemyData, Ec, stdIn);
 					boolean scan = enemyScanPlayerMuiti(gameMap, enemyData, Ec);
 					healPlayer(playerData, 5);
@@ -906,7 +947,7 @@ public class Main {
 					} else {
 						System.out.printf("<T:%d> HP:%d\n",turn,playerData[2]);
 					}
-					showMap(gameMap,enemyData);
+					showMap(gameMap,enemyData,ItemData);
 					existEnemy = checkAllEnemy(enemyData);
 					if (!existEnemy && Ec > 0) {
 						gameLoop = false;
@@ -944,10 +985,12 @@ public class Main {
  * 
  * 
  * --------操作説明--------
+ *
  * --初期設定--
  * ・x,yでマップの広さを指定
  * ・nで障害物の個数を指定
  * ・敵の数を指定
+ * ・アイテムの個数を指定
  * 
  * --マップでの操作--
  * ・「 wasd 」で動かす
@@ -959,6 +1002,7 @@ public class Main {
  * ・全ての敵を倒すと終了
  * ・マップ上部の「 <T:n> 」の n は現在のターン数
  * 
+ * 
  * --戦闘中での操作・説明--
  * ・[ A ]で攻撃
  * ・[ Q ]で撤退
@@ -967,10 +1011,12 @@ public class Main {
  * 
  * 
  * --マップ上の番号の意味と表示--
- * 何もなし:0 , 「 - 」
- * プレイヤー:1 , 「 @ 」
- * 壁(障害物):2, 「 # 」
- * 敵:3 , 「 * 」
+ * 何もなし		:0 , 「 - 」
+ * プレイヤー	:1 , 「 @ 」
+ * 壁(障害物)	:2 , 「 # 」
+ * 敵			:3 , 「 * , + 」
+ * アイテム		:4 , 「 $ 」
+ * 
  * 
  * --ソースコードについて--
  * ・xが行、yが列に関する値。Eが敵、Pがプレイヤーに関する値		例)int Ex -> 敵のx座標の値
@@ -983,6 +1029,10 @@ public class Main {
  * 						...,
  * 						{"}													  					//敵n
  * 					  }
+ * ・ItemDataの形式： {
+ * 						{ x(x座標), y(y座標), mode(アイテムの種類), A(使用済みかどうか) }
+ * 
+ * 					  }
  * ・敵が撃破された場合(E=1のとき)、敵の座標(x,y)は(-1,-1)に設定される。
  * ・敵の動作モード「 M 」：0=動作しない、1=ランダム移動、2=プレイヤーを追いかける動作
  * ・playerDataの形式：{x座標、y座標、HP、ATK, maxHP}
@@ -990,7 +1040,7 @@ public class Main {
  * 
  * --------メソットの概要・説明(雑)--------
  * ・makeGameMap			:2次元配列gameMapの作成する
- * ・showMap				:コンソールにマップを表示する
+ * ・showMap				:コンソールにマップを表示する，アイテムの位置の更新
  * ・movePoint				:プレイヤー(ポイント)を動かす処理、敵を踏むと「接敵!」と表示する処理、戦闘後の移動処理
  *
  * ・RandomSetEnemy			:プレイヤーの周囲1マス以外の場所にランダムに敵を配置する処理
@@ -1009,4 +1059,5 @@ public class Main {
  * ・getEnemyNumber			;[内部処理] 入力された敵の座標から，敵の番号を返すメソッド．
  * ・randomSetItem			;アイテムをマップ上にランダムにセットするメソッド．int[][]アイテムデータを返す．
  * ・showItemData			;アイテムデータを表示するメソッド．
+ * ・useItem				;プレイヤーがアイテムを使う処理．アイテム使用時の効果を設定できる
  */
