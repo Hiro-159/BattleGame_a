@@ -12,9 +12,9 @@ public class Player {
 		// TODO 自動生成されたコンストラクター・スタブ
 		Px = 0;				//[0]
 		Py = 0;				//[1]
+		maxHp = PlayerHp;	//[4]
 		hp = maxHp;			//[2]
 		ATK = PlayerATK;	//[3]
-		maxHp = PlayerHp;	//[4]
 	}
 	
 	public void showPlayerData() {
@@ -26,6 +26,64 @@ public class Player {
 		//int[] playerData;//仮のデータ
 		boolean battleWin = false;
 		//プレイヤーを動かす処理//
+		int dx = -1; //縦方向に動く差分
+		int dy = -1; //横方向に動く差分
+		if (key.equals("w") || key.equals("s")) {
+			if (key.equals("w")) {
+				dx = Px-1;
+			} else if (key.equals("s")) {
+				dx = Px+1;
+			}
+			if (dx >= 0 && gameMap[dx][Py] == 3) {
+				//System.out.println("接敵!");
+				battleWin = battleMode(gameMap, enemyData, dx, Py, battleWin, stdIn);
+				if (battleWin) {
+					//System.out.println("勝利!");
+					gameMap[Px][Py] = 0;
+					gameMap[dx][Py] = 1;
+					Px = dx;
+				}
+			}
+			else if (dx >= 0 && gameMap[dx][Py] == 0) {
+				gameMap[Px][Py] = 0;
+				gameMap[dx][Py] = 1;
+				Px = dx;
+			} else if (dx >= 0 && gameMap[dx][Py] == 4) {
+				useItem(itemData, dx,Py);
+				gameMap[Px][Py] = 0;
+				gameMap[dx][Py] = 1;
+				Px = dx;
+			}
+		}
+		if (key.equals("d") || key.equals("a")) {
+			if (key.equals("d")) {
+				dy = Py+1; //右に移動
+			} else if (key.equals("a")) {
+				dy = Py-1; //左に移動
+			}
+			if (dy < gameMap[Px].length && gameMap[Px][dy] == 3) {
+				//System.out.println("接敵!");
+				battleWin = battleMode(gameMap, enemyData, Px, dy, battleWin, stdIn);
+				if (battleWin) {
+					//System.out.println("勝利!");
+					gameMap[Px][Py] = 0;
+					gameMap[Px][dy] = 1;
+					Py = dy;
+				}
+			}
+			else if (dy < gameMap[Px].length && gameMap[Px][dy] == 0) {
+				gameMap[Px][Py] = 0;
+				gameMap[Px][dy] = 1;
+				Py = dy;
+			}
+			else if (dy < gameMap[Px].length && gameMap[Px][dy] == 4) {
+				useItem(itemData, Px,dy);
+				gameMap[Px][Py] = 0;
+				gameMap[Px][dy] = 1;
+				Py = dy;
+			}
+		}
+		/*
 		if (key.equals("w")) {
 			if (Px-1 >= 0 && gameMap[Px-1][Py] == 3) {
 				//System.out.println("接敵!");
@@ -114,7 +172,7 @@ public class Player {
 				Py = Py-1;
 			}
 		}
-		
+		*/
 		return;
 	}
 	
