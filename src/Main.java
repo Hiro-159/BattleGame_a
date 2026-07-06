@@ -832,10 +832,13 @@ public class Main {
 				int Iy = rand.nextInt(gameMap[Ix].length);
 				if (gameMap[Ix][Iy] == 0) {
 					gameMap[Ix][Iy] = 4;
+					//
 					ItemData[i][0] = Ix;
 					ItemData[i][1] = Iy;
 					ItemData[i][2] = 0;	//仮のモード
 					ItemData[i][3] = 1; //1;使用可, 0;使用済
+					//
+					
 					i++;
 				} else {
 					continue;
@@ -861,6 +864,7 @@ public class Main {
 		}
 		
 		//Playerクラス_OK
+		/*
 		static void useItem(int[][] itemData, int Ix, int Iy, int[] playerData) {
 			//アイテムの番号を求める//
 			int itemNumber = -1;
@@ -884,6 +888,7 @@ public class Main {
 				return;
 			}
 		}
+		*/
 		
 		public static void main(String[] args) {
 			// TODO 自動生成されたメソッド・スタブ
