@@ -3,9 +3,10 @@ import java.util.Scanner;
 
 public class Main {
 	//1番下にゲームの操作説明やソースコードの説明
-		static int[][] makeGameMap(int x,int y,int n) {
+		//GameMapクラス_OK
+		static int[][] makeGameMap(int x,int y,int n, int seed) {
 			//マップを生成する処理//
-			Random rand = new Random();
+			Random rand = new Random(seed);
 			int[][] gameMap = new int[x][y];
 			for (int i = 0; i < gameMap.length; i++) {
 				for (int j = 0; j < gameMap[i].length; j++) {
@@ -36,6 +37,7 @@ public class Main {
 			return gameMap;
 		}
 		
+		//GameMapクラス_OK
 		static void showMap(int[][] map ,int[][] enemyData, int[][] itemData) {
 			//マップの表示をする処理//
 			for (int i = 0; i < map.length; i++) {
@@ -184,8 +186,9 @@ public class Main {
 		}
 		*/
 		
-		static int[][] RandomSetEnemy (int[][] gameMap,int Ec) {
-			Random rand = new Random();
+		//GameMapクラス_OK
+		static int[][] RandomSetEnemy (int[][] gameMap,int Ec,int seed) {
+			Random rand = new Random(seed);
 			//プレイヤーの位置を求める処理//
 			int Px = 0;
 			int Py = 0;
@@ -214,8 +217,8 @@ public class Main {
 			return gameMap;
 		}
 		
-		static int[][] makeEnemyData (int[][] gameMap,int Ec) {
-			Random rand = new Random();
+		static int[][] makeEnemyData (int[][] gameMap,int Ec,int seed) {
+			Random rand = new Random(seed);
 			int[][] enemyData = new int[Ec][6];		//{Ex,Ey,E,HP,ATK,M} * 敵の数
 			int D = 0;
 			for (int i = 0; i < gameMap.length; i++) {
@@ -443,7 +446,7 @@ public class Main {
 				System.out.println();
 			}
 			System.out.println("-------------------------------");
-		}	
+		}
 		
 		//Playerクラス_OK
 		/*
@@ -824,10 +827,10 @@ public class Main {
 			return -1;
 		}
 		
-		static int[][] randomSetItem (int[][] gameMap, int ItemCount) {
+		static int[][] randomSetItem (int[][] gameMap, int ItemCount, int seed) {
 			int[][] ItemData = new int[ItemCount][4];	//{x,y,mode,A}
+			Random rand = new Random(seed);
 			for (int i = 0; i < ItemCount;) {
-				Random rand = new Random();
 				int Ix = rand.nextInt(gameMap.length);
 				int Iy = rand.nextInt(gameMap[Ix].length);
 				if (gameMap[Ix][Iy] == 0) {
@@ -841,10 +844,10 @@ public class Main {
 					
 					i++;
 				} else {
+					//System.out.println(Ix +","+Iy); //確認用
 					continue;
 				}
 			}
-			
 			
 			return ItemData;
 		}
@@ -866,6 +869,8 @@ public class Main {
 		//Playerクラス_OK
 		/*
 		static void useItem(int[][] itemData, int Ix, int Iy, int[] playerData) {
+
+
 			//アイテムの番号を求める//
 			int itemNumber = -1;
 			for (int i = 0; i < itemData.length; i++) {
@@ -890,6 +895,17 @@ public class Main {
 		}
 		*/
 		
+		static int makeSeed(int inSeed) {
+			if (inSeed == 0) {
+				Random rand = new Random();
+				return rand.nextInt(100001);
+			}
+			else {
+				return inSeed;
+			}
+			
+		}
+		
 		public static void main(String[] args) {
 			// TODO 自動生成されたメソッド・スタブ
 			Scanner stdIn = new Scanner(System.in);
@@ -909,8 +925,11 @@ public class Main {
 			int Ec = stdIn.nextInt();
 			//int Ec = 2;
 			//System.out.println("Ec=2");
-			System.out.println("アイテム($)の数:");
+			System.out.print("アイテム($)の数:");
 			int itemCount = stdIn.nextInt();
+			
+			System.out.print("シード値:");
+			int inSeed = stdIn.nextInt();
 			
 			if (x * y < n+Ec+itemCount) {
 				System.out.println("error");
@@ -923,13 +942,18 @@ public class Main {
 			//int[] playerData = makePlayerData(playerHP,playerATK);//＠＠
 			Player player = new Player(playerHP, playerATK);
 			
-			int[][] gameMap = makeGameMap(x, y, n);
-			gameMap = RandomSetEnemy(gameMap, Ec);
+			int seed = makeSeed(inSeed);
+			System.out.println("シード値: " + seed);
 			
-			int[][] enemyData = makeEnemyData(gameMap, Ec);
+			int[][] gameMap = makeGameMap(x, y, n, seed);
+			gameMap = RandomSetEnemy(gameMap, Ec, seed);
+			
+			//GameMap GameMap = new GameMap(x, y, n, seed);
+			
+			int[][] enemyData = makeEnemyData(gameMap, Ec, seed);
 			showEnemyData(enemyData);
 			
-			int[][] ItemData = randomSetItem(gameMap, itemCount);
+			int[][] ItemData = randomSetItem(gameMap, itemCount, seed);
 			
 			//System.out.printf("HP:%d\n",playerData[2]);
 			System.out.printf("HP:%d\n",player.getHP());
@@ -1068,6 +1092,9 @@ public class Main {
  * ・敵が撃破された場合(E=1のとき)、敵の座標(x,y)は(-1,-1)に設定される。
  * ・敵の動作モード「 M 」：0=動作しない、1=ランダム移動、2=プレイヤーを追いかける動作
  * ・playerDataの形式：{x座標、y座標、HP、ATK, maxHP}
+ * ・シード値について：
+ * 		マップ上の配置がシード値によって決められる．
+ * 		シード値は敵の動作には影響しない．
  * 
  * 
  * --------メソットの概要・説明(雑)--------
@@ -1092,4 +1119,5 @@ public class Main {
  * ・randomSetItem			;アイテムをマップ上にランダムにセットするメソッド．int[][]アイテムデータを返す．
  * ・showItemData			;アイテムデータを表示するメソッド．
  * ・useItem				;プレイヤーがアイテムを使う処理．アイテム使用時の効果を設定できる
+ * ・makeSeed				;入力値が0の場合，シード値(0～100000)を作るメソット．入力値がそれ以外は入力値を返す．
  */
