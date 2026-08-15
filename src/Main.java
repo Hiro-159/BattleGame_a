@@ -76,116 +76,6 @@ public class Main {
 			}
 		}
 		
-		//Playerクラス_OK
-		/*
-		static void movePoint(int[][] gameMap,String key,int[] playerData ,int[][] enemyData ,Scanner stdIn, int[][] itemData) {
-			//プレイヤーの位置を求める処理//
-			int Px = 0;
-			int Py = 0;
-			searchPoint:for (int i = 0; i < gameMap.length; i++) {
-				for (int j = 0; j < gameMap[i].length; j++) {
-					if (gameMap[i][j] == 1) {
-						Px = i;
-						Py = j;
-						break searchPoint;
-					}
-				}
-			}
-			boolean battleWin = false;
-			//プレイヤーを動かす処理//
-			if (key.equals("w")) {
-				if (Px-1 >= 0 && gameMap[Px-1][Py] == 3) {
-					//System.out.println("接敵!");
-					battleWin = battleMode(gameMap, playerData, enemyData, Px-1, Py, battleWin, stdIn);
-					if (battleWin) {
-						//System.out.println("勝利!");
-						gameMap[Px][Py] = 0;
-						gameMap[Px-1][Py] = 1;
-						playerData[0] = Px-1;
-					}
-				}
-				else if (Px-1 >= 0 && gameMap[Px-1][Py] == 0) {
-					gameMap[Px][Py] = 0;
-					gameMap[Px-1][Py] = 1;
-					playerData[0] = Px-1;
-				} else if (Px-1 >= 0 && gameMap[Px-1][Py] == 4) {
-					useItem(itemData, Px-1,Py,playerData);
-					gameMap[Px][Py] = 0;
-					gameMap[Px-1][Py] = 1;
-					playerData[0] = Px-1;
-				}
-			} else if (key.equals("s")) {
-				if (Px+1 < gameMap.length && gameMap[Px+1][Py] == 3) {
-					//System.out.println("接敵!");
-					battleWin = battleMode(gameMap, playerData, enemyData,Px+1,Py ,battleWin, stdIn);
-					if (battleWin) {
-						//System.out.println("勝利!");
-						gameMap[Px][Py] = 0;
-						gameMap[Px+1][Py] = 1;
-						playerData[0] = Px+1;
-					}
-				}
-				else if (Px+1 < gameMap.length && gameMap[Px+1][Py] == 0) {
-					gameMap[Px][Py] = 0;
-					gameMap[Px+1][Py] = 1;
-					playerData[0] = Px+1;
-				} 
-				else if (Px+1 < gameMap.length && gameMap[Px+1][Py] == 4) {
-					useItem(itemData, Px+1,Py,playerData);
-					gameMap[Px][Py] = 0;
-					gameMap[Px+1][Py] = 1;
-					playerData[0] = Px+1;
-				}
-			} else if (key.equals("d")) {
-				if (Py+1 < gameMap[Px].length && gameMap[Px][Py+1] == 3) {
-					//System.out.println("接敵!");
-					battleWin = battleMode(gameMap, playerData, enemyData, Px, Py+1, battleWin, stdIn);
-					if (battleWin) {
-						//System.out.println("勝利!");
-						gameMap[Px][Py] = 0;
-						gameMap[Px][Py+1] = 1;
-						playerData[1] = Py+1;
-					}
-				}
-				else if (Py+1 < gameMap[Px].length && gameMap[Px][Py+1] == 0) {
-					gameMap[Px][Py] = 0;
-					gameMap[Px][Py+1] = 1;
-					playerData[1] = Py+1;
-				}
-				else if (Py+1 < gameMap[Px].length && gameMap[Px][Py+1] == 4) {
-					useItem(itemData, Px,Py+1,playerData);
-					gameMap[Px][Py] = 0;
-					gameMap[Px][Py+1] = 1;
-					playerData[1] = Py+1;
-				}
-			} else if (key.equals("a")) {
-				if (Py-1 >= 0 && gameMap[Px][Py-1] == 3) {
-					//System.out.println("接敵!");
-					battleWin = battleMode(gameMap, playerData, enemyData,Px,Py-1,battleWin, stdIn);
-					if (battleWin) {
-						//System.out.println("勝利!");
-						gameMap[Px][Py] = 0;
-						gameMap[Px][Py-1] = 1;
-						playerData[1] = Py-1;
-					}
-				}
-				else if (Py-1 >= 0 && gameMap[Px][Py-1] == 0) {
-					gameMap[Px][Py] = 0;
-					gameMap[Px][Py-1] = 1;
-					playerData[1] = Py-1;
-				}
-				else if (Py-1 >= 0 && gameMap[Px][Py-1] == 4) {
-					useItem(itemData, Px,Py-1,playerData);
-					gameMap[Px][Py] = 0;
-					gameMap[Px][Py-1] = 1;
-					playerData[1] = Py-1;
-				}
-			}
-			
-			return;
-		}
-		*/
-		
 		//GameMapクラス_OK
 		static int[][] RandomSetEnemy (int[][] gameMap,int Ec,int seed) {
 			Random rand = new Random(seed);
@@ -448,26 +338,6 @@ public class Main {
 			System.out.println("-------------------------------");
 		}
 		
-		//Playerクラス_OK
-		/*
-		static int[] makePlayerData (int HP ,int ATK) {
-			int[] playerData = new int[5];
-			playerData[0] = 0;
-			playerData[1] = 0;
-			playerData[2] = HP;		//実際のHP
-			playerData[3] = ATK;
-			playerData[4] = HP;		//maxHP
-			return playerData;
-		}
-		*/
-		
-		//Playerクラス_OK
-		/*
-		static void showPlayerData (int[] playerData) {
-			System.out.printf("HP:%d\n",playerData[2]);
-			System.out.printf("ATK:%d\n",playerData[3]);
-		}
-		*/
 		
 		//Playerクラス(仮)
 		static boolean battleMode (int[][] gameMap, Player player,int[][] enemyData ,int Ex ,int Ey ,boolean battleWin ,Scanner stdIn) {
@@ -517,17 +387,7 @@ public class Main {
 			
 			return battleWin;
 		}
-		
-		//Playerクラス_OK
-		/*
-		static void healPlayer (int[] playerData, int healHP) {
-			if (playerData[2] + healHP >= playerData[4]) {
-				playerData[2] = playerData[4];
-			} else {
-				playerData[2] += healHP;
-			}
-		}
-		*/
+
 		
 		static boolean checkAllEnemy (int[][] enemyData) {
 			boolean existEnemy = false;
@@ -538,6 +398,7 @@ public class Main {
 			}
 			return existEnemy;
 		}
+		
 		
 		static boolean checkplayer (int[][] gameMap) {
 			boolean existPleyer = false;;
@@ -551,6 +412,7 @@ public class Main {
 			}
 			return existPleyer;
 		}
+		
 		
 		static void enemyChasePlayerMuiti (int[][] gameMap, Player player, int[][] enemyData, int Ex, int Ey, int i, Scanner stdIn) {
 			Random rand = new Random();
@@ -763,6 +625,7 @@ public class Main {
 			}
 		}
 		
+		
 		static void onlyMoveOneEnemyRandom (int[][] gameMap, Player player, int[][] enemyData, int Ex, int Ey, int i) {
 			Random rand = new Random();
 			boolean moveing = true;
@@ -939,7 +802,6 @@ public class Main {
 			int playerHP = 100;				//プレイヤーのHP
 			int playerATK = 30;				//プレイヤーの攻撃力
 			
-			//int[] playerData = makePlayerData(playerHP,playerATK);//＠＠
 			Player player = new Player(playerHP, playerATK);
 			
 			int seed = makeSeed(inSeed);
@@ -955,7 +817,6 @@ public class Main {
 			
 			int[][] ItemData = randomSetItem(gameMap, itemCount, seed);
 			
-			//System.out.printf("HP:%d\n",playerData[2]);
 			System.out.printf("HP:%d\n",player.getHP());
 			
 			showMap(gameMap,enemyData,ItemData);
@@ -979,7 +840,6 @@ public class Main {
 					keyIn = stdIn.nextLine();
 				}
 				if (keyIn.equals("e")) {
-					//showPlayerData(playerData);
 					player.showPlayerData();
 					keyIn = stdIn.nextLine();
 				}
@@ -989,18 +849,14 @@ public class Main {
 				}
 				else {
 					
-					//movePoint(gameMap, keyIn, playerData, enemyData, stdIn, ItemData);//＠＠
 					player.move(gameMap, keyIn, enemyData, stdIn, ItemData);
 					
 					moveEnemyMulti(gameMap,player ,enemyData, Ec, stdIn);
 					boolean scan = enemyScanPlayerMuiti(gameMap, enemyData, Ec);
-					//healPlayer(playerData, 5);
 					player.heal(5);
 					if (scan) {
-						//System.out.printf("<T:%d> [!] HP:%d\n",turn,playerData[2]);
 						System.out.printf("<T:%d> [!] HP:%d\n",turn,player.getHP());
 					} else {
-						//System.out.printf("<T:%d> HP:%d\n",turn,playerData[2]);
 						System.out.printf("<T:%d> HP:%d\n",turn,player.getHP());
 					}
 					showMap(gameMap,enemyData,ItemData);
