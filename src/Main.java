@@ -990,12 +990,12 @@ public class Main {
 				else {
 					
 					//movePoint(gameMap, keyIn, playerData, enemyData, stdIn, ItemData);//＠＠
-					player.movePoint(gameMap, keyIn, enemyData, stdIn, ItemData);
+					player.move(gameMap, keyIn, enemyData, stdIn, ItemData);
 					
 					moveEnemyMulti(gameMap,player ,enemyData, Ec, stdIn);
 					boolean scan = enemyScanPlayerMuiti(gameMap, enemyData, Ec);
 					//healPlayer(playerData, 5);
-					player.healPlayer(5);
+					player.heal(5);
 					if (scan) {
 						//System.out.printf("<T:%d> [!] HP:%d\n",turn,playerData[2]);
 						System.out.printf("<T:%d> [!] HP:%d\n",turn,player.getHP());

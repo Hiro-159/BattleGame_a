@@ -1,28 +1,26 @@
 import java.util.Scanner;
 
-public class Player {
+public class Player extends Unit {
 	////コンストラクタ////
 	private int Px;			//[0]
 	private int Py;
-	private int hp;
-	private int ATK;
-	private int maxHp;		//[4]
+	//private int hp;
+	//private int ATK;
+	//private int maxHp;	//[4]
 	
 	public Player(int PlayerHp, int PlayerATK) {
 		// TODO 自動生成されたコンストラクター・スタブ
+		super(PlayerHp, PlayerATK);
 		Px = 0;				//[0]
 		Py = 0;				//[1]
-		maxHp = PlayerHp;	//[4]
-		hp = maxHp;			//[2]
-		ATK = PlayerATK;	//[3]
 	}
 	
 	public void showPlayerData() {
-		System.out.printf("HP:%d\n",hp);
-		System.out.printf("ATK:%d\n",ATK);
+		System.out.printf("HP:%d\n",getHP());
+		System.out.printf("ATK:%d\n",getATK());
 	}
 	
-	public void movePoint(int[][] gameMap, String key, int[][] enemyData, Scanner stdIn, int[][] itemData) {
+	public void move(int[][] gameMap, String key, int[][] enemyData, Scanner stdIn, int[][] itemData) {
 		//int[] playerData;//仮のデータ
 		boolean battleWin = false;
 		//プレイヤーを動かす処理//
@@ -87,17 +85,6 @@ public class Player {
 		return;
 	}
 	
-	public void healPlayer(int healHP) {
-		if (hp + healHP >= maxHp) {
-			hp = maxHp;
-		} else {
-			hp += healHP;
-		}
-	}
-	
-	public void damage(int n) {
-		hp -= n;
-	}
 	
 	private void useItem(int[][] itemData, int Ix, int Iy) {
 		//アイテムの番号を求める//
@@ -112,7 +99,7 @@ public class Player {
 		if (itemData[itemNumber][3] == 1) {
 			if (itemData[itemNumber][2] == 0) {
 				//healPlayer(playerData, 10);
-				healPlayer(10);
+				heal(10);
 			}
 			//
 			//ここに他のアイテムの効果を追加
@@ -136,14 +123,14 @@ public class Player {
 		System.out.println("接敵!");
 		boolean battleLoop = true;
 		battle: while (battleLoop) {
-			System.out.printf("プレイヤーのHP,ATK:%d,%d\n",hp,ATK);
+			System.out.printf("プレイヤーのHP,ATK:%d,%d\n",getHP(),getATK());
 			System.out.printf("敵のHP,ATK:%d,%d\n",enemyData[En][3],enemyData[En][4]);
 			System.out.println("攻撃:A,撤退:Q");
 			String keyIn = stdIn.nextLine();
 			
 			if (keyIn.equals("A") || keyIn.equals("a")) {
-				enemyData[En][3] -= ATK;
-				hp -= enemyData[En][4];
+				enemyData[En][3] -= getATK();
+				damage(enemyData[En][4]);
 			} 
 			else if (keyIn.equals("Q") || keyIn.equals("q")) {
 				battleLoop = false;
@@ -160,22 +147,14 @@ public class Player {
 				System.out.println("勝利!");
 				break battle;
 			}
-			else if (hp <= 0) {
-				hp = 1;//要改善?
+			else if (getHP() <= 0) {
+				setHP(1); //要改善?
 				System.out.println("敗北");
 				battleLoop = false;
 			}
 		}
 		
 		return battleWin;
-	}
-	
-	public int getHP() {
-		return hp;
-	}
-	
-	public void setHP(int n) {
-		hp = n;
 	}
 	
 	public int getPx() {
@@ -185,10 +164,4 @@ public class Player {
 	public int getPy() {
 		return Py;
 	}
-	
-	public int getATK() {
-		return ATK;
-	}
-	
-	
 }
