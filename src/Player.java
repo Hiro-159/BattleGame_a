@@ -1,4 +1,4 @@
-import java.util.Scanner;
+//import java.util.Scanner;
 
 public class Player extends Unit {
 	////コンストラクタ////
@@ -20,6 +20,7 @@ public class Player extends Unit {
 		System.out.printf("ATK:%d\n",getATK());
 	}
 	
+	/*
 	public void move(int[][] gameMap, String key, int[][] enemyData, Scanner stdIn, int[][] itemData) {
 		//int[] playerData;//仮のデータ
 		boolean battleWin = false;
@@ -84,6 +85,7 @@ public class Player extends Unit {
 		
 		return;
 	}
+	*/
 	
 	public void move(int moveMode) {
 		if (moveMode == 1) {
@@ -123,7 +125,7 @@ public class Player extends Unit {
 		}
 	}
 	
-	
+	/*
 	private boolean battleMode (int[][] gameMap, int[][] enemyData ,int Ex ,int Ey ,boolean battleWin ,Scanner stdIn) {
 		int En = -1;		//敵の番号
 		//敵の番号を求める処理//
@@ -169,7 +171,8 @@ public class Player extends Unit {
 		}
 		
 		return battleWin;
-	}
+	}*/
+	
 	
 	public int getPx() {
 		return Px;

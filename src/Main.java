@@ -108,6 +108,7 @@ public class Main {
 		}
 		
 		//EnemyClass_OK
+		/*
 		static int[][] makeEnemyData (int[][] gameMap,int Ec,int seed) {
 			Random rand = new Random(seed);
 			int[][] enemyData = new int[Ec][6];		//{Ex,Ey,E,HP,ATK,M} * 敵の数
@@ -128,6 +129,7 @@ public class Main {
 			}
 			return enemyData;
 		}
+		*/
 		
 		static void moveEnemyMulti (int[][] gameMap, Player player, Enemy[] enemyData, int Ec, Scanner stdIn) {
 			Random rand = new Random();
@@ -310,6 +312,7 @@ public class Main {
 		}
 		
 		//Enemyクラス_OK
+		/*
 		static void showEnemyData (int[][] enemyData) {
 			//enemyDataを表示する処理//
 			System.out.println("-----------敵の情報------------");
@@ -340,6 +343,7 @@ public class Main {
 			}
 			System.out.println("-------------------------------");
 		}
+		*/
 		
 		//Playerクラス(仮)
 		static boolean battleMode (int[][] gameMap, Player player,Enemy[] enemyData ,int Ex ,int Ey ,boolean battleWin ,Scanner stdIn) {
@@ -396,6 +400,7 @@ public class Main {
 		}
 
 		//Enemyクラス_OK
+		/*
 		static boolean checkAllEnemy (int[][] enemyData) {
 			boolean existEnemy = false;
 			for (int i = 0; i < enemyData.length; i++) {
@@ -405,6 +410,7 @@ public class Main {
 			}
 			return existEnemy;
 		}
+		*/
 		
 		
 		static boolean checkplayer (int[][] gameMap) {
@@ -689,6 +695,7 @@ public class Main {
 		}
 		
 		//EnemyClass_OK
+		/*
 		static int getEnemyNumber (int[][] enemyData ,int Ex ,int Ey) {
 			for (int i = 0; i < enemyData.length; i++) {
 				if (enemyData[i][0] == Ex && enemyData[i][1] == Ey) {
@@ -697,6 +704,7 @@ public class Main {
 			}
 			return -1;
 		}
+		*/
 		
 		static int[][] randomSetItem (int[][] gameMap, int ItemCount, int seed) {
 			int[][] ItemData = new int[ItemCount][4];	//{x,y,mode,A}
