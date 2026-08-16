@@ -85,8 +85,21 @@ public class Player extends Unit {
 		return;
 	}
 	
+	public void move(int moveMode) {
+		if (moveMode == 1) {
+			Px -= 1;
+		} else if (moveMode == 2) {
+			Py -= 1;
+		} else if (moveMode == 3) {
+			Px += 1;
+		} else if (moveMode == 4) {
+			Py += 1;
+		} else {
+			System.out.println("err:Player_move");
+		}
+	}
 	
-	private void useItem(int[][] itemData, int Ix, int Iy) {
+	void useItem(int[][] itemData, int Ix, int Iy) {
 		//アイテムの番号を求める//
 		int itemNumber = -1;
 		for (int i = 0; i < itemData.length; i++) {
@@ -109,6 +122,7 @@ public class Player extends Unit {
 			return;
 		}
 	}
+	
 	
 	private boolean battleMode (int[][] gameMap, int[][] enemyData ,int Ex ,int Ey ,boolean battleWin ,Scanner stdIn) {
 		int En = -1;		//敵の番号
@@ -165,3 +179,10 @@ public class Player extends Unit {
 		return Py;
 	}
 }
+
+
+//-----memo------
+/*
+ *・move処理をMainに移行
+ * 
+ */
