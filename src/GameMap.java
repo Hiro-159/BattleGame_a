@@ -50,7 +50,7 @@ public class GameMap {
 				} else if (gameMap[i][j] == 2) {
 					System.out.print("#");
 				} else if (gameMap[i][j] == 3) {
-					if (enemyData[Main.getEnemyNumber(enemyData, i, j)][5] == 1) {
+					if (enemyData[Enemy.getEnemyNumber(enemyData, i, j)][5] == 1) {
 						System.out.print("*");
 					} else if (enemyData[Main.getEnemyNumber(enemyData, i, j)][5] == 2) {
 						System.out.print("+");
@@ -92,6 +92,28 @@ public class GameMap {
 				}
 			} 
 		}
+	}
+	
+	public static int[][] makeGameMap(int x,int y,int n, int seed) {
+		//マップを生成する処理//
+		Random rand = new Random(seed);
+		int[][] gameMap = new int[x][y];
+		for (int i = 0; i < gameMap.length; i++) {
+			for (int j = 0; j < gameMap[i].length; j++) {
+				gameMap[i][j] = 0;
+			}
+		}
+		gameMap[0][0] = 1;		//ポイント(プレイヤー)の位置
+		//障害物のランダム生成する処理//
+		for (int i = 0; i < n; ) {
+			int Nx = rand.nextInt(gameMap.length);
+			int Ny = rand.nextInt(gameMap[Nx].length);
+			if (gameMap[Nx][Ny] == 0) {
+				gameMap[Nx][Ny] = 2;
+				i++;
+			} 
+		}
+		return gameMap;
 	}
 	
 	
