@@ -23,17 +23,6 @@ public class Main {
 					i++;
 				} 
 			}
-			//敵の生成する処理//
-			/*
-			for (int i = 0; i < 1; ) {
-				int Ex = rand.nextInt(gameMap.length);
-				int Ey = rand.nextInt(gameMap[Ex].length);
-				if (gameMap[Ex][Ey] == 0) {
-					gameMap[Ex][Ey] = 3;
-					i++;
-				} 
-			}
-			*/
 			return gameMap;
 		}
 		
@@ -106,30 +95,6 @@ public class Main {
 			}
 			return gameMap;
 		}
-		
-		//EnemyClass_OK
-		/*
-		static int[][] makeEnemyData (int[][] gameMap,int Ec,int seed) {
-			Random rand = new Random(seed);
-			int[][] enemyData = new int[Ec][6];		//{Ex,Ey,E,HP,ATK,M} * 敵の数
-			int D = 0;
-			for (int i = 0; i < gameMap.length; i++) {
-				for (int j = 0; j < gameMap[i].length; j++) {
-					if (gameMap[i][j] == 3) {
-						enemyData[D][0] = i;
-						enemyData[D][1] = j;
-						enemyData[D][2] = 1;
-						enemyData[D][3] = 80;
-						enemyData[D][4] = 10;
-						int modeRoll = rand.nextInt(2) + 1;
-						enemyData[D][5] = modeRoll;
-						D++;
-					}
-				}
-			}
-			return enemyData;
-		}
-		*/
 		
 		static void moveEnemyMulti (int[][] gameMap, Player player, Enemy[] enemyData, int Ec, Scanner stdIn) {
 			Random rand = new Random();
@@ -311,56 +276,14 @@ public class Main {
 			return hit;
 		}
 		
-		//Enemyクラス_OK
-		/*
-		static void showEnemyData (int[][] enemyData) {
-			//enemyDataを表示する処理//
-			System.out.println("-----------敵の情報------------");
-			System.out.println("        | x, y, e,HP,ATK,mode ");
-			for (int i = 0; i < enemyData.length; i++) {
-				for (int j = 0; j < enemyData[i].length; j++) {
-					if (j == 0) {
-						System.out.printf("敵No.%2d |%2d",i,enemyData[i][j]);
-					}
-					else if (j == 4) {
-						System.out.printf(",%3d",enemyData[i][j]);
-					} else if (j == 5){
-						if(enemyData[i][j] == 0) {
-							System.out.print(",待機");
-						} else if (enemyData[i][j] == 1) {
-							System.out.print(",移動");
-						} else if (enemyData[i][j] == 2) {
-							System.out.print(",追跡");
-						} else {
-							System.out.printf("%2d",enemyData[i][j]);
-						}
-					}
-					else {
-						System.out.printf(",%2d",enemyData[i][j]);
-					}
-				}
-				System.out.println();
-			}
-			System.out.println("-------------------------------");
-		}
-		*/
-		
-		//Playerクラス(仮)
 		static boolean battleMode (int[][] gameMap, Player player,Enemy[] enemyData ,int Ex ,int Ey ,boolean battleWin ,Scanner stdIn) {
 			int En = -1;		//敵の番号
 			//敵の番号を求める処理//
 			En = Enemy.getEnemyNumber(enemyData, Ex, Ey);
-			/*
-			for (int i = 0; i < enemyData.length; i++) {
-				if (Ex == enemyData[i][0] && Ey == enemyData[i][1]) {
-					En = i;
-					break;
-				}
-			}
-			*/
 			
 			//戦闘処理//
 			System.out.println("接敵!");
+			System.out.println("-----------戦闘開始-----------");
 			boolean battleLoop = true;
 			battle: while (battleLoop) {
 				int enemyATK = enemyData[En].getATK();
@@ -368,6 +291,7 @@ public class Main {
 				System.out.printf("プレイヤーのHP,ATK:%d,%d\n",player.getHP(),player.getATK());
 				System.out.printf("敵のHP,ATK:%d,%d\n",enemyHP,enemyATK);
 				System.out.println("攻撃:A,撤退:Q");
+				System.out.print(">>");
 				String keyIn = stdIn.nextLine();
 				
 				if (keyIn.equals("A") || keyIn.equals("a")) {
@@ -395,23 +319,9 @@ public class Main {
 					battleLoop = false;
 				}
 			}
-			
+			System.out.println("-----------戦闘終了-----------");
 			return battleWin;
-		}
-
-		//Enemyクラス_OK
-		/*
-		static boolean checkAllEnemy (int[][] enemyData) {
-			boolean existEnemy = false;
-			for (int i = 0; i < enemyData.length; i++) {
-				if (enemyData[i][2] == 1) {
-					existEnemy = true;
-				}
-			}
-			return existEnemy;
-		}
-		*/
-		
+		}		
 		
 		static boolean checkplayer (int[][] gameMap) {
 			boolean existPleyer = false;;
@@ -425,7 +335,6 @@ public class Main {
 			}
 			return existPleyer;
 		}
-		
 		
 		static void enemyChasePlayerMuiti (int[][] gameMap, Player player, Enemy[] enemyData, int Ex, int Ey, int i, Scanner stdIn) {
 			Random rand = new Random();
@@ -638,7 +547,6 @@ public class Main {
 			}
 		}
 		
-		
 		static void onlyMoveOneEnemyRandom (int[][] gameMap, Player player, Enemy[] enemyData, int Ex, int Ey, int i) {
 			Random rand = new Random();
 			boolean moveing = true;
@@ -694,18 +602,6 @@ public class Main {
 			}
 		}
 		
-		//EnemyClass_OK
-		/*
-		static int getEnemyNumber (int[][] enemyData ,int Ex ,int Ey) {
-			for (int i = 0; i < enemyData.length; i++) {
-				if (enemyData[i][0] == Ex && enemyData[i][1] == Ey) {
-					return i;
-				}
-			}
-			return -1;
-		}
-		*/
-		
 		static int[][] randomSetItem (int[][] gameMap, int ItemCount, int seed) {
 			int[][] ItemData = new int[ItemCount][4];	//{x,y,mode,A}
 			Random rand = new Random(seed);
@@ -744,35 +640,6 @@ public class Main {
 			}
 			System.out.println("-----------------");
 		}
-		
-		//Playerクラス_OK
-		/*
-		static void useItem(int[][] itemData, int Ix, int Iy, int[] playerData) {
-
-
-			//アイテムの番号を求める//
-			int itemNumber = -1;
-			for (int i = 0; i < itemData.length; i++) {
-				if (itemData[i][0] == Ix && itemData[i][1] == Iy) {
-					itemNumber = i;
-					break;
-				}
-			}
-			//アイテムを使用する//
-			if (itemData[itemNumber][3] == 1) {
-				if (itemData[itemNumber][2] == 0) {
-					//healPlayer(playerData, 10);
-					
-				}
-				//
-				//ここに他のアイテムの効果を追加
-				//
-				itemData[itemNumber][3] = 0;
-			} else {
-				return;
-			}
-		}
-		*/
 		
 		static int makeSeed(int inSeed) {
 			if (inSeed == 0) {
@@ -887,9 +754,8 @@ public class Main {
 				return;
 			}
 			
-			int playerHP = 100;				//プレイヤーのHP
-			int playerATK = 30;				//プレイヤーの攻撃力
-			
+			int playerHP = 100;	//プレイヤーのHP
+			int playerATK = 30;	//プレイヤーの攻撃力
 			Player player = new Player(playerHP, playerATK);
 			
 			int seed = makeSeed(inSeed);
@@ -897,20 +763,15 @@ public class Main {
 			
 			int[][] gameMap = makeGameMap(x, y, n, seed);
 			gameMap = RandomSetEnemy(gameMap, Ec, seed);
+			//GameMap GameMap = new GameMap(x, y, n, seed);	//作成途中
 			
-			//GameMap GameMap = new GameMap(x, y, n, seed);
-			
-			//敵データの生成
-			//int[][] enemyData = makeEnemyData(gameMap, Ec, seed); //old
-			//showEnemyData(enemyData); //old
-			Enemy[] EnemyData = Enemy.makeEnemyData(gameMap, Ec, seed); //new
-			Enemy.showData(EnemyData); //new
-			
+			//敵データの生成//
+			Enemy[] EnemyData = Enemy.makeEnemyData(gameMap, Ec, seed);
+			Enemy.showData(EnemyData);
 			
 			int[][] ItemData = randomSetItem(gameMap, itemCount, seed);
 			
 			System.out.printf("HP:%d\n",player.getHP());
-			
 			showMap(gameMap,EnemyData,ItemData);
 			boolean gameLoop = true;
 			String space = stdIn.nextLine();
@@ -921,51 +782,47 @@ public class Main {
 			boolean existEnemy;		//敵が存在しているかどうか
 			boolean existPleyer;	//プレイヤーが存在しているかどうか
 			int turn = 1;			//ターン数
+			//メインループ//
 			while (gameLoop) {
 				
 				if (keyIn.equals("q")) {
 					gameLoop = false;
 					break;
 				}
-				if (keyIn.equals("m")) {
-					//showEnemyData(enemyData); //old
+				else if (keyIn.equals("m")) {
 					Enemy.showData(EnemyData);
 					keyIn = stdIn.nextLine();
 				}
-				if (keyIn.equals("e")) {
+				else if (keyIn.equals("e")) {
 					player.showPlayerData();
 					keyIn = stdIn.nextLine();
 				}
-				if (keyIn.equals("i")) {
+				else if (keyIn.equals("i")) {
 					showItemData(ItemData);
 					keyIn = stdIn.nextLine();
 				}
 				else {
-					
-					//player.move(gameMap, keyIn, enemyData, stdIn, ItemData); //old
-					movePoint(gameMap, keyIn, player, EnemyData, stdIn, ItemData); //new
-					
-					moveEnemyMulti(gameMap,player ,EnemyData, Ec, stdIn);
-					
+					//回復＆敵・味方の移動//
 					player.heal(5);
+					movePoint(gameMap, keyIn, player, EnemyData, stdIn, ItemData);
+					moveEnemyMulti(gameMap,player ,EnemyData, Ec, stdIn);
 					
 					boolean scan = enemyScanPlayerMuiti(gameMap, EnemyData, Ec);
 					if (scan) {
-						System.out.printf("<T:%d> [!] HP:%d\n",turn,player.getHP());
+						System.out.printf("<Turn:%d> [!] HP:%d\n",turn,player.getHP());
 					} else {
-						System.out.printf("<T:%d> HP:%d\n",turn,player.getHP());
+						System.out.printf("<Turn:%d> HP:%d\n",turn,player.getHP());
 					}
 					showMap(gameMap,EnemyData,ItemData);
 					
 					//敵の存在判定//
-					//existEnemy = checkAllEnemy(enemyData); //old
-					existEnemy = Enemy.checkAllEnemy(EnemyData); //new
+					existEnemy = Enemy.checkAllEnemy(EnemyData);
 					if (!existEnemy && Ec > 0) {
 						gameLoop = false;
 						System.out.println("全ての敵を撃破!");
 						break;
 					}
-					
+					//プレイヤーの存在判定//
 					existPleyer = checkplayer(gameMap);
 					if (!existPleyer) {
 						System.out.println("プレイヤーが撃破された");
@@ -980,7 +837,6 @@ public class Main {
 			}
 			System.out.println("終了!");
 		}
-
 	}
 
 /* --個人的メモ--
@@ -989,45 +845,47 @@ public class Main {
  *   →enemyData,playerDataが正とする
  * ・作成したメソッドは出来る限り改変しない方針、カプセル化する
  *   →普通に難しい(改変しないことが)
+ * ・コードが雑
  * 
  * 
  * 
  * 
  * 
  * 
- * 
- * --------操作説明--------
+ * --------ゲーム説明--------
  *
  * --初期設定--
  * ・x,yでマップの広さを指定
- * ・nで障害物の個数を指定
- * ・敵の数を指定
- * ・アイテムの個数を指定
+ * ・障害物(#)の個数を指定
+ * ・敵(*,+)の数を指定
+ * ・アイテム($)の個数を指定
  * 
- * --マップでの操作--
- * ・「 wasd 」で動かす
- * ・「 q 」を入力すると終了
- * ・「 m 」を入力すると全ての敵の状態を表示
- * ・敵が撃破された場合、敵の座標(x,y)は(-1,-1)に設定される。
- * ・「 e 」を入力するとプレイヤーの状態を表示
+ * 
+ * --マップでの操作・説明--
+ * ・「 wasd 」でプレイヤーを動かす
+ * ・「 q 」：ゲームの終了
+ * ・「 m 」：全ての敵の状態を表示
+ * ・「 e 」：プレイヤーの状態を表示
+ * ・「 i 」：アイテムの状態を表示
  * ・敵の周囲1マスにプレイヤーが入ると、マップ上部に [!] が表示される
  * ・全ての敵を倒すと終了
- * ・マップ上部の「 <T:n> 」の n は現在のターン数
+ * ・マップ上部の「 <Turn:n> 」の n は現在のターン数
  * 
  * 
  * --戦闘中での操作・説明--
  * ・[ A ]で攻撃
  * ・[ Q ]で撤退
- * ・プレイヤーは攻撃での戦闘に負けた場合、HPが1になる(死なない)
- * 	 防御での戦闘で負けたor撤退した場合、ゲームオーバー
+ * ・プレイヤーは攻撃側での戦闘に負けた場合、HPが1になる(死なない)
+ * ・防御側での戦闘で負けたor撤退した場合、ゲームオーバー
  * 
  * 
- * --マップ上の番号の意味と表示--
- * 何もなし		:0 , 「 - 」
- * プレイヤー	:1 , 「 @ 」
- * 壁(障害物)	:2 , 「 # 」
- * 敵			:3 , 「 * , + 」
- * アイテム		:4 , 「 $ 」
+ * --マップ上の意味と表示--
+ * ・何もなし			: 「 - 」
+ * ・プレイヤー			: 「 @ 」
+ * ・壁(障害物)			: 「 # 」
+ * ・敵(ランダム移動)	: 「 * 」
+ * ・敵(追跡移動)		: 「 + 」
+ * ・アイテム			: 「 $ 」
  * 
  * 
  * --ソースコードについて--
@@ -1035,19 +893,15 @@ public class Main {
  * ・Don't二次配布、改造・参考にするのはOK
  * ・プレイヤーが復活する等のバグがある
  * ・ソースコードの「 //～～する処理//　」などは、これ以下のコードの処理の概要を説明している。(多少読みやすくなるはず)
- * ・enemyDataの形式：{
- * 						{ Ex(敵のx座標)、Ey(敵のy座標)、E(敵が存在するかどうか)、敵のHP、敵のATK 、m(敵の動作モード)}, 	//敵0
- * 						{"},												　					//敵1
- * 						...,
- * 						{"}													  					//敵n
- * 					  }
+ * 
  * ・ItemDataの形式： {
  * 						{ x(x座標), y(y座標), mode(アイテムの種類), A(使用済みかどうか) }
  * 
  * 					  }
+ * 
  * ・敵が撃破された場合(E=1のとき)、敵の座標(x,y)は(-1,-1)に設定される。
- * ・敵の動作モード「 M 」：0=動作しない、1=ランダム移動、2=プレイヤーを追いかける動作
- * ・playerDataの形式：{x座標、y座標、HP、ATK, maxHP}
+ * ・敵の動作モード：0=動作しない、1=ランダム移動、2=プレイヤーを追いかける動作
+ * ・敵が撃破された場合、敵の座標(x,y)は(-1,-1)に設定される。
  * ・シード値について：
  * 		マップ上の配置がシード値によって決められる．
  * 		シード値は敵の動作には影響しない．
@@ -1056,8 +910,7 @@ public class Main {
  * --------メソットの概要・説明(雑)--------
  * ・makeGameMap			:2次元配列gameMapの作成する
  * ・showMap				:コンソールにマップを表示する，アイテムの位置の更新
- * ・movePoint				:プレイヤー(ポイント)を動かす処理、敵を踏むと「接敵!」と表示する処理、戦闘後の移動処理
- *
+ * ・movePoint				:プレイヤー(ポイント)を動かす処理、戦闘後の移動処理
  * ・RandomSetEnemy			:プレイヤーの周囲1マス以外の場所にランダムに敵を配置する処理
  * ・makeEnemyData			;敵の情報(enemyData)を作成する
  * ・moveEnemyMulti			;複数(単数)の敵を動かす処理、敵の存在の可否を確認する処理
