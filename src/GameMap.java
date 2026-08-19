@@ -3,9 +3,10 @@ import java.util.Random;
 public class GameMap {
 	
 	////コンストラクタ////
-	private int[][] gameMap;
+	//private int[][] gameMap;
 	
 	//makeGameMap
+	/*
 	public GameMap(int x, int y, int n, int seed) {
 		// TODO 自動生成されたコンストラクター・スタブ
 		Random rand = new Random(seed);
@@ -26,8 +27,11 @@ public class GameMap {
 			} 
 		}
 	}
+	*/
 	
+	/*
 	void show(int[][] enemyData, int[][] itemData) {
+
 		//マップの表示をする処理//
 		for (int i = 0; i < gameMap.length; i++) {
 			for (int j = 0; j < gameMap[i].length; j++) {
@@ -64,7 +68,9 @@ public class GameMap {
 			System.out.println();
 		}
 	}
+	*/
 	
+	/*
 	void randomSetEnemy(int Ec, int seed) {
 		Random rand = new Random(seed);
 		//プレイヤーの位置を求める処理//
@@ -93,8 +99,9 @@ public class GameMap {
 			} 
 		}
 	}
+	*/
 	
-	public static int[][] makeGameMap(int x,int y,int n, int seed) {
+	public static int[][] make(int x,int y,int n, int seed) {
 		//マップを生成する処理//
 		Random rand = new Random(seed);
 		int[][] gameMap = new int[x][y];
@@ -116,5 +123,71 @@ public class GameMap {
 		return gameMap;
 	}
 	
+	public static void show(int[][] map ,Enemy[] enemyData, int[][] itemData) {
+		//マップの表示をする処理//
+		for (int i = 0; i < map.length; i++) {
+			for (int j = 0; j < map[i].length; j++) {
+				if (map[i][j] == 0) {
+					boolean isItem = false;
+					for (int k = 0; k < itemData.length; k++) {
+						if (itemData[k][0] == i && itemData[k][1] == j && itemData[k][3] == 1) {
+							isItem = true;
+							break;
+						}
+					}
+					if (isItem) {
+						System.out.print("$");
+						map[i][j] = 4;
+					} else {
+						System.out.print("-");
+					}
+				} else if (map[i][j] == 1) {
+					System.out.print("@");
+				} else if (map[i][j] == 2) {
+					System.out.print("#");
+				} else if (map[i][j] == 3) {
+					if (enemyData[Enemy.getEnemyNumber(enemyData, i, j)].getMode() == 1) {
+						System.out.print("*");
+					} else if (enemyData[Enemy.getEnemyNumber(enemyData, i, j)].getMode() == 2) {
+						System.out.print("+");
+					}
+				} else if (map[i][j] == 4) {
+					System.out.print("$");
+				} else {
+					System.out.println("?");	//マップの要素が不明な場合
+				}
+			}
+			System.out.println();
+		}
+	}
 	
+	public static int[][] RandomSetEnemy (int[][] gameMap,int Ec,int seed) {
+		Random rand = new Random(seed);
+		//プレイヤーの位置を求める処理//
+		int Px = 0;
+		int Py = 0;
+		searchPoint:for (int i = 0; i < gameMap.length; i++) {
+			for (int j = 0; j < gameMap[i].length; j++) {
+				if (gameMap[i][j] == 1) {
+					Px = i;
+					Py = j;
+					break searchPoint;
+				}
+			}
+		}
+		//敵をプレイヤーの周囲1マス以外に配置する処理//
+		for (int i = 0; i < Ec; ) {
+			int Ex = rand.nextInt(gameMap.length);
+			int Ey = rand.nextInt(gameMap[Ex].length);
+			if ( (Px-1<=Ex && Ex<=Px+1) && (Py-1<=Ey && Ey<=Py+1) ) {
+				continue;
+			} else {
+				if (gameMap[Ex][Ey] == 0)  {
+				gameMap[Ex][Ey] = 3;
+				i++;
+				}
+			} 
+		}
+		return gameMap;
+	}
 }
