@@ -112,14 +112,18 @@ public class Main {
 					if (mode == 2) {
 						enemyChasePlayerMuiti(gameMap, player, enemyData, Ex, Ey, i, stdIn);
 					}
-					else if (gameMap[Ex][Ey] == 3) {
+					else if (gameMap[Ex][Ey] == 3 && mode == 1) {
+						
 						boolean moveing = true;		//移動したかどうか
 						boolean battleWin = false;	//プレイヤーが戦闘に勝利したかどうか
 						////敵をランダムに動かす処理////
+						moveEnemyRandom(gameMap, player, enemyData, Ex, Ey, i, stdIn);
+						/*
 						while (moveing) {
 							int moveKey = rand.nextInt(5);
 							if (moveKey == 0) {
 								moveing = false;
+								break;
 							}
 							//敵が上に動く場合//
 							if (moveKey == 1) {
@@ -130,23 +134,19 @@ public class Main {
 										moveing = false;
 										break;
 									} else {
-										gameMap[Ex][Ey] = 0;
-										gameMap[Ex-1][Ey] = 3;
-										enemyData[i].move(1);
+										moveEnemy(moveKey, gameMap, Ex, Ey, enemyData, i);
 										moveing = false;
 										break;
 									}
 								}
 								else if (Ex-1 >= 0 && gameMap[Ex-1][Ey] != 2 && gameMap[Ex-1][Ey] != 3) {
-									gameMap[Ex][Ey] = 0;
-									gameMap[Ex-1][Ey] = 3;
-									enemyData[i].move(1);
+									moveEnemy(moveKey, gameMap, Ex, Ey, enemyData, i);
 									moveing = false;
 									break;
 								}
 							} 
 							//敵が下に動く場合//
-							else if (moveKey == 2) {
+							else if (moveKey == 3) {
 								if (Ex+1 < gameMap.length && gameMap[Ex+1][Ey] == 1) {
 									battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, battleWin, stdIn);
 									if (battleWin) {
@@ -154,23 +154,19 @@ public class Main {
 										moveing = false;
 										break;
 									} else {
-										gameMap[Ex][Ey] = 0;
-										gameMap[Ex+1][Ey] = 3;
-										enemyData[i].move(3);
+										moveEnemy(moveKey, gameMap, Ex, Ey, enemyData, i);
 										moveing = false;
 										break;
 									}
 								}
 								else if (Ex+1 < gameMap.length && gameMap[Ex+1][Ey] != 2 && gameMap[Ex+1][Ey] != 3) {
-									gameMap[Ex][Ey] = 0;
-									gameMap[Ex+1][Ey] = 3;
-									enemyData[i].move(3);
+									moveEnemy(moveKey, gameMap, Ex, Ey, enemyData, i);
 									moveing = false;
 									break;
 								}
 							}
 							//敵を右に動かす場合//
-							else if (moveKey == 3) {
+							else if (moveKey == 4) {
 								if (Ey+1 < gameMap[Ex].length && gameMap[Ex][Ey+1] == 1) {
 									battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, battleWin, stdIn);
 									if (battleWin) {
@@ -178,24 +174,20 @@ public class Main {
 										moveing = false;
 										break;
 									} else {
-										gameMap[Ex][Ey] = 0;
-										gameMap[Ex][Ey+1] = 3;
-										enemyData[i].move(4);
+										moveEnemy(moveKey, gameMap, Ex, Ey, enemyData, i);
 										moveing = false;
 										break;
 									}
 								}
 								else if (Ey+1 < gameMap[Ex].length && gameMap[Ex][Ey+1] != 2 && gameMap[Ex][Ey+1] != 3) {
-									gameMap[Ex][Ey] = 0;
-									gameMap[Ex][Ey+1] = 3;
-									enemyData[i].move(4);
+									moveEnemy(moveKey, gameMap, Ex, Ey, enemyData, i);
 									moveing = false;
 									break;
 									
 								}
 							}
 							//敵を左に動かす場合//
-							else if (moveKey == 4) {
+							else if (moveKey == 2) {
 								if (Ey-1 >= 0 && gameMap[Ex][Ey-1] == 1) {
 									battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, battleWin, stdIn);
 									if (battleWin) {
@@ -203,22 +195,19 @@ public class Main {
 										moveing =false;
 										break;
 									} else {
-										gameMap[Ex][Ey] = 0;
-										gameMap[Ex][Ey-1] = 3;
-										enemyData[i].move(2);;
+										moveEnemy(moveKey, gameMap, Ex, Ey, enemyData, i);
 										moveing = false;
 										break;
 									}
 								}
 								else if (Ey-1 >= 0 && gameMap[Ex][Ey-1]!= 2 && gameMap[Ex][Ey-1]!= 3) {
-									gameMap[Ex][Ey] = 0;
-									gameMap[Ex][Ey-1] = 3;
-									enemyData[i].move(2);
+									moveEnemy(moveKey, gameMap, Ex, Ey, enemyData, i);
 									moveing = false;
 									break;
 								}
 							}
 						}
+						*/
 					}
 				}
 			}
@@ -282,8 +271,9 @@ public class Main {
 			return hit;
 		}
 		
-		static boolean battleMode (int[][] gameMap, Player player,Enemy[] enemyData ,int Ex ,int Ey ,boolean battleWin ,Scanner stdIn) {
-			int En = -1;		//敵の番号
+		static boolean battleMode (int[][] gameMap, Player player,Enemy[] enemyData ,int Ex ,int Ey ,Scanner stdIn) {
+			boolean battleWin = false;
+			int En = -1;	//敵の番号
 			//敵の番号を求める処理//
 			En = Enemy.getEnemyNumber(enemyData, Ex, Ey);
 			
@@ -353,7 +343,7 @@ public class Main {
 			boolean battleWin = false;
 			while (moveing) {
 				if (count > 10) {
-					onlyMoveOneEnemyRandom(gameMap, player, enemyData, Ex, Ey, i);
+					moveEnemyRandom(gameMap, player, enemyData, Ex, Ey, i, stdIn);
 					moveing = false;
 					break;
 				}
@@ -363,7 +353,7 @@ public class Main {
 					if (R == 0) {
 						if (Px-Ex > 0 && gameMap[Ex+1][Ey] != 2 && gameMap[Ex+1][Ey] != 3) {
 							if (gameMap[Ex+1][Ey] == 1) {
-								battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, battleWin, stdIn);
+								battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn);
 								if (battleWin) {
 									gameMap[Ex][Ey] = 0;
 									moveing = false;
@@ -384,7 +374,7 @@ public class Main {
 							}
 						} else if (Px-Ex < 0 && gameMap[Ex-1][Ey] != 2 && gameMap[Ex-1][Ey] != 3) {
 							if (gameMap[Ex-1][Ey] == 1) {
-								battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, battleWin, stdIn);
+								battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn);
 								if (battleWin) {
 									gameMap[Ex][Ey] = 0;
 									moveing = false;
@@ -408,7 +398,7 @@ public class Main {
 					else if (R == 1) {
 						if (Py-Ey > 0 && gameMap[Ex][Ey+1] != 2 && gameMap[Ex][Ey+1] != 3) {
 							if (gameMap[Ex][Ey+1] == 1) {
-								battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, battleWin, stdIn);
+								battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn);
 								if (battleWin) {
 									gameMap[Ex][Ey] = 0;
 									moveing = false;
@@ -429,7 +419,7 @@ public class Main {
 							}
 						} else if (Py-Ey < 0 && gameMap[Ex][Ey-1] != 2 && gameMap[Ex][Ey-1] != 3) {
 							if (gameMap[Ex][Ey-1] == 1) {
-								battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, battleWin, stdIn);
+								battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn);
 								if (battleWin) {
 									gameMap[Ex][Ey] = 0;
 									moveing = false;
@@ -456,7 +446,7 @@ public class Main {
 				else if (Px-Ex != 0 && Py-Ey == 0) {
 					if (Px-Ex > 0 && gameMap[Ex+1][Ey] != 2 && gameMap[Ex+1][Ey] != 3) {
 						if (gameMap[Ex+1][Ey] == 1) {
-							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, battleWin, stdIn);
+							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey,  stdIn);
 							if (battleWin) {
 								gameMap[Ex][Ey] = 0;
 								moveing = false;
@@ -477,7 +467,7 @@ public class Main {
 						}
 					} else if (Px-Ex < 0 && gameMap[Ex-1][Ey] != 2 && gameMap[Ex-1][Ey] != 3) {
 						if (gameMap[Ex-1][Ey] == 1) {
-							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, battleWin, stdIn);
+							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn);
 							if (battleWin) {
 								gameMap[Ex][Ey] = 0;
 								moveing = false;
@@ -502,7 +492,7 @@ public class Main {
 				else if (Px-Ex == 0 && Py-Ey != 0) {
 					if (Py-Ey > 0 && gameMap[Ex][Ey+1] != 2 && gameMap[Ex][Ey+1] != 3) {
 						if (gameMap[Ex][Ey+1] == 1) {
-							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, battleWin, stdIn);
+							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn);
 							if (battleWin) {
 								gameMap[Ex][Ey] = 0;
 								moveing = false;
@@ -523,7 +513,7 @@ public class Main {
 						}
 					} else if (Py-Ey < 0 && gameMap[Ex][Ey-1] != 2 && gameMap[Ex][Ey-1] != 3) {
 						if (gameMap[Ex][Ey-1] == 1) {
-							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, battleWin, stdIn);
+							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn);
 							if (battleWin) {
 								gameMap[Ex][Ey] = 0;
 								moveing = false;
@@ -553,9 +543,10 @@ public class Main {
 			}
 		}
 		
-		static void onlyMoveOneEnemyRandom (int[][] gameMap, Player player, Enemy[] enemyData, int Ex, int Ey, int i) {
+		static void moveEnemyRandom (int[][] gameMap, Player player, Enemy[] enemyData, int Ex, int Ey, int i, Scanner stdIn) {
 			Random rand = new Random();
 			boolean moveing = true;
+			boolean battleWin;
 			
 			while (moveing) {
 				int moveKey = rand.nextInt(5);
@@ -566,43 +557,94 @@ public class Main {
 				}
 				//敵が上に動く場合//
 				if (moveKey == 1) {
-					if (Ex-1 >= 0 && gameMap[Ex-1][Ey] != 2 && gameMap[Ex-1][Ey] != 3) {
-						gameMap[Ex][Ey] = 0;
-						gameMap[Ex-1][Ey] = 3;
-						enemyData[i].move(1);
-						moveing = false;
-						break;
+					if (Ex-1 >= 0) {
+						if (gameMap[Ex-1][Ey] == 1) {
+							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn);
+							if (battleWin) {
+								gameMap[Ex][Ey] = 0;
+								moveing = false;
+								break;
+							} else {
+								moveEnemy(moveKey, gameMap, Ex, Ey, enemyData, i);
+								moveing = false;
+								break;
+							}
+						}
+						else if (gameMap[Ex-1][Ey] != 2 && gameMap[Ex-1][Ey] != 3) {
+							moveEnemy(moveKey, gameMap, Ex, Ey, enemyData, i);
+							moveing = false;
+							break;
+						}
+						
+						
 					}
 				} 
 				//敵が下に動く場合//
-				else if (moveKey == 2) {
-					if (Ex+1 < gameMap.length && gameMap[Ex+1][Ey] != 2 && gameMap[Ex+1][Ey] != 3) {
-						gameMap[Ex][Ey] = 0;
-						gameMap[Ex+1][Ey] = 3;
-						enemyData[i].move(3);
-						moveing = false;
-						break;
-					}
-				}
-				//敵を右に動かす場合//
 				else if (moveKey == 3) {
-					if (Ey+1 < gameMap[Ex].length && gameMap[Ex][Ey+1] != 2 && gameMap[Ex][Ey+1] != 3) {
-						gameMap[Ex][Ey] = 0;
-						gameMap[Ex][Ey+1] = 3;
-						enemyData[i].move(4);
-						moveing = false;
-						break;
+					if (Ex+1 < gameMap.length) {
+						if (gameMap[Ex+1][Ey] == 1) {
+							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn);
+							if (battleWin) {
+								gameMap[Ex][Ey] = 0;
+								moveing = false;
+								break;
+							} else {
+								moveEnemy(moveKey, gameMap, Ex, Ey, enemyData, i);
+								moveing = false;
+								break;
+							}
+						}
+						else if (gameMap[Ex+1][Ey] != 2 && gameMap[Ex+1][Ey] != 3) {
+							moveEnemy(moveKey, gameMap, Ex, Ey, enemyData, i);
+							moveing = false;
+							break;
+						}
 						
 					}
 				}
-				//敵を左に動かす場合//
+				//敵を右に動かす場合//
 				else if (moveKey == 4) {
-					if (Ey-1 >= 0 && gameMap[Ex][Ey-1]!= 2 && gameMap[Ex][Ey-1]!= 3) {
-						gameMap[Ex][Ey] = 0;
-						gameMap[Ex][Ey-1] = 3;
-						enemyData[i].move(2);
-						moveing = false;
-						break;
+					if (Ey+1 < gameMap[Ex].length) {
+						if (gameMap[Ex][Ey+1] == 1) {
+							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn);
+							if (battleWin) {
+								gameMap[Ex][Ey] = 0;
+								moveing = false;
+								break;
+							} else {
+								moveEnemy(moveKey, gameMap, Ex, Ey, enemyData, i);
+								moveing = false;
+								break;
+							}
+						}
+						else if (gameMap[Ex][Ey+1] != 2 && gameMap[Ex][Ey+1] != 3) {
+							moveEnemy(moveKey, gameMap, Ex, Ey, enemyData, i);
+							moveing = false;
+							break;
+						}
+					}
+				}
+				//敵を左に動かす場合//
+				else if (moveKey == 2) {
+					if (Ey-1 >= 0) {
+						if (gameMap[Ex][Ey-1] == 1) {
+							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn);
+							if (battleWin) {
+								gameMap[Ex][Ey] = 0;
+								moveing =false;
+								break;
+							} else {
+								moveEnemy(moveKey, gameMap, Ex, Ey, enemyData, i);
+								moveing = false;
+								break;
+							}
+						}
+						else if (gameMap[Ex][Ey-1]!= 2 && gameMap[Ex][Ey-1]!= 3) {
+							moveEnemy(moveKey, gameMap, Ex, Ey, enemyData, i);
+							moveing = false;
+							break;
+						}
+						
 					}
 				}
 			}
@@ -676,24 +718,24 @@ public class Main {
 					dx = Px+1;
 					moveMode = 3;
 				}
-				if (dx >= 0 && gameMap[dx][Py] == 3) {
-					//System.out.println("接敵!");
-					battleWin = battleMode(gameMap, player, enemyData, dx, Py, battleWin, stdIn);
-					if (battleWin) {
+				if (0 <= dx && dx < gameMap.length)  {
+					if (gameMap[dx][Py] == 0) {
+						gameMap[Px][Py] = 0;
+						gameMap[dx][Py] = 1;
+						player.move(moveMode);
+					} else if (gameMap[dx][Py] == 3) {
+						battleWin = battleMode(gameMap, player, enemyData, dx, Py, stdIn);
+						if (battleWin) {
+							gameMap[Px][Py] = 0;
+							gameMap[dx][Py] = 1;
+							player.move(moveMode);
+						}
+					} else if (gameMap[dx][Py] == 4) {
+						player.useItem(itemData, dx,Py);
 						gameMap[Px][Py] = 0;
 						gameMap[dx][Py] = 1;
 						player.move(moveMode);
 					}
-				}
-				else if (dx >= 0 && gameMap[dx][Py] == 0) {
-					gameMap[Px][Py] = 0;
-					gameMap[dx][Py] = 1;
-					player.move(moveMode);
-				} else if (dx >= 0 && gameMap[dx][Py] == 4) {
-					player.useItem(itemData, dx,Py);
-					gameMap[Px][Py] = 0;
-					gameMap[dx][Py] = 1;
-					player.move(moveMode);
 				}
 			}
 			if (key.equals("d") || key.equals("a")) {
@@ -704,30 +746,49 @@ public class Main {
 					dy = Py-1; //左に移動
 					moveMode = 2;
 				}
-				if (dy < gameMap[Px].length && gameMap[Px][dy] == 3) {
-					//System.out.println("接敵!");
-					battleWin = battleMode(gameMap, player, enemyData, Px, dy, battleWin, stdIn);
-					if (battleWin) {
-						//System.out.println("勝利!");
+				if (-1 < dy && dy < gameMap[Px].length) {
+					if (gameMap[Px][dy] == 0) {
+						gameMap[Px][Py] = 0;
+						gameMap[Px][dy] = 1;
+						player.move(moveMode);
+					}else if (gameMap[Px][dy] == 3) {
+						battleWin = battleMode(gameMap, player, enemyData, Px, dy, stdIn);
+						if (battleWin) {
+							gameMap[Px][Py] = 0;
+							gameMap[Px][dy] = 1;
+							player.move(moveMode);
+						}
+					} else if (gameMap[Px][dy] == 4) {
+						player.useItem(itemData, Px,dy);
 						gameMap[Px][Py] = 0;
 						gameMap[Px][dy] = 1;
 						player.move(moveMode);
 					}
 				}
-				else if (dy < gameMap[Px].length && gameMap[Px][dy] == 0) {
-					gameMap[Px][Py] = 0;
-					gameMap[Px][dy] = 1;
-					player.move(moveMode);
-				}
-				else if (dy < gameMap[Px].length && gameMap[Px][dy] == 4) {
-					player.useItem(itemData, Px,dy);
-					gameMap[Px][Py] = 0;
-					gameMap[Px][dy] = 1;
-					player.move(moveMode);
-				}
 			}
-			
 			return;
+		}
+		
+		static void moveEnemy(int moveMode, int[][] gameMap, int Ex, int Ey, Enemy[] enemyData, int En) {
+			if (moveMode == 1) {
+				gameMap[Ex][Ey] = 0;
+				gameMap[Ex-1][Ey] = 3;
+				enemyData[En].move(moveMode);
+			} else if (moveMode == 2) {
+				gameMap[Ex][Ey] = 0;
+				gameMap[Ex][Ey-1] = 3;
+				enemyData[En].move(moveMode);
+			} else if (moveMode == 3) {
+				gameMap[Ex][Ey] = 0;
+				gameMap[Ex+1][Ey] = 3;
+				enemyData[En].move(moveMode);
+			} else if (moveMode == 4) {
+				gameMap[Ex][Ey] = 0;
+				gameMap[Ex][Ey+1] = 3;
+				enemyData[En].move(moveMode);
+			} else {
+				System.out.println("err:main_moveEnemy");
+			}
 		}
 		
 		public static void main(String[] args) {
@@ -886,12 +947,12 @@ public class Main {
  * 
  * 
  * --マップ上の意味と表示--
- * ・何もなし			: 「 - 」
- * ・プレイヤー			: 「 @ 」
- * ・壁(障害物)			: 「 # 」
- * ・敵(ランダム移動)	: 「 * 」
- * ・敵(追跡移動)		: 「 + 」
- * ・アイテム			: 「 $ 」
+ * ・何もなし			:0 「 - 」
+ * ・プレイヤー			:1 「 @ 」
+ * ・壁(障害物)			:2 「 # 」
+ * ・敵(ランダム移動)	:3 「 * 」
+ * ・敵(追跡移動)		:3 「 + 」
+ * ・アイテム			:4 「 $ 」
  * 
  * 
  * --ソースコードについて--
