@@ -4,6 +4,7 @@ import java.util.Scanner;
 public class Main {
 	//1番下にゲームの操作説明やソースコードの説明
 		//GameMapクラス_OK
+		/*
 		static int[][] makeGameMap(int x,int y,int n, int seed) {
 			//マップを生成する処理//
 			Random rand = new Random(seed);
@@ -25,8 +26,10 @@ public class Main {
 			}
 			return gameMap;
 		}
+		*/
 		
 		//GameMapクラス_OK
+		/*
 		static void showMap(int[][] map ,Enemy[] enemyData, int[][] itemData) {
 			//マップの表示をする処理//
 			for (int i = 0; i < map.length; i++) {
@@ -64,8 +67,10 @@ public class Main {
 				System.out.println();
 			}
 		}
+		*/
 		
 		//GameMapクラス_OK
+		/*
 		static int[][] RandomSetEnemy (int[][] gameMap,int Ec,int seed) {
 			Random rand = new Random(seed);
 			//プレイヤーの位置を求める処理//
@@ -95,6 +100,7 @@ public class Main {
 			}
 			return gameMap;
 		}
+		*/
 		
 		static void moveEnemyMulti (int[][] gameMap, Player player, Enemy[] enemyData, int Ec, Scanner stdIn) {
 			Random rand = new Random();
@@ -761,8 +767,8 @@ public class Main {
 			int seed = makeSeed(inSeed);
 			System.out.println("シード値: " + seed);
 			
-			int[][] gameMap = makeGameMap(x, y, n, seed);
-			gameMap = RandomSetEnemy(gameMap, Ec, seed);
+			int[][] gameMap = GameMap.make(x, y, n, seed);
+			gameMap = GameMap.RandomSetEnemy(gameMap, Ec, seed);
 			//GameMap GameMap = new GameMap(x, y, n, seed);	//作成途中
 			
 			//敵データの生成//
@@ -772,7 +778,7 @@ public class Main {
 			int[][] ItemData = randomSetItem(gameMap, itemCount, seed);
 			
 			System.out.printf("HP:%d\n",player.getHP());
-			showMap(gameMap,EnemyData,ItemData);
+			GameMap.show(gameMap,EnemyData,ItemData);
 			boolean gameLoop = true;
 			String space = stdIn.nextLine();
 			System.out.print(">");
@@ -813,7 +819,7 @@ public class Main {
 					} else {
 						System.out.printf("<Turn:%d> HP:%d\n",turn,player.getHP());
 					}
-					showMap(gameMap,EnemyData,ItemData);
+					GameMap.show(gameMap,EnemyData,ItemData);
 					
 					//敵の存在判定//
 					existEnemy = Enemy.checkAllEnemy(EnemyData);
