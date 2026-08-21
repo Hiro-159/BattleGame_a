@@ -4,7 +4,6 @@ import java.util.Scanner;
 public class Main {
 	//1番下にゲームの操作説明やソースコードの説明
 		static void moveEnemyMulti (int[][] gameMap, Player player, Enemy[] enemyData, int Ec, Scanner stdIn) {
-			Random rand = new Random();
 			for (int i = 0; i < Ec; i++) {
 				if (enemyData[i].IsAlive()) {
 					int Ex = enemyData[i].getEx();
@@ -13,11 +12,7 @@ public class Main {
 					if (mode == 2) {
 						enemyChasePlayerMuiti(gameMap, player, enemyData, Ex, Ey, i, stdIn);
 					}
-					else if (gameMap[Ex][Ey] == 3 && mode == 1) {
-						
-						boolean moveing = true;		//移動したかどうか
-						boolean battleWin = false;	//プレイヤーが戦闘に勝利したかどうか
-						////敵をランダムに動かす処理////
+					else if (gameMap[Ex][Ey] == 3 && mode == 1) {//敵をランダムに動かす処理
 						moveEnemyRandom(gameMap, player, enemyData, Ex, Ey, i, stdIn);
 					}
 				}
@@ -82,14 +77,20 @@ public class Main {
 			return hit;
 		}
 		
-		static boolean battleMode (int[][] gameMap, Player player,Enemy[] enemyData ,int Ex ,int Ey ,Scanner stdIn) {
+		static boolean battleMode (int[][] gameMap, Player player,Enemy[] enemyData ,int Ex ,int Ey ,Scanner stdIn, boolean isAttack) {
+			//Random rand = new Random();
 			boolean battleWin = false;
 			int En = -1;	//敵の番号
 			//敵の番号を求める処理//
 			En = Enemy.getEnemyNumber(enemyData, Ex, Ey);
 			
 			//戦闘処理//
-			System.out.println("接敵!");
+			System.out.print("接敵! ");
+			if (isAttack) {
+				System.out.println("(攻撃側)");
+			} else {
+				System.out.println("(防衛側)");
+			}
 			System.out.println("-----------戦闘開始-----------");
 			boolean battleLoop = true;
 			battle: while (battleLoop) {
@@ -101,13 +102,35 @@ public class Main {
 				System.out.print(">>");
 				String keyIn = stdIn.nextLine();
 				
-				if (keyIn.equals("A") || keyIn.equals("a")) {
-					//enemyData[En][3] -= player.getATK();
-					enemyData[En].damage(player.getATK());
-					//playerData[2] -= enemyData[En][4];
-					player.damage(enemyATK);
+				if (keyIn.equals("A") || keyIn.equals("a")) { //攻撃時の処理
+					int playerATK_R = calculateDamage(player.getATK(), 0.2);
+					System.out.printf("プレイヤー ->> 敵 : %d ダメージ\n",playerATK_R);
+					enemyData[En].damage(playerATK_R);
+					if (enemyData[En].IsAlive()) {
+						int enemyATK_R = calculateDamage(enemyATK, 0.2);
+						System.out.printf("敵 ->> プレイヤー : %d ダメージ\n",enemyATK_R);
+						player.damage(enemyATK_R);
+					}
+					
 				} 
 				else if (keyIn.equals("Q") || keyIn.equals("q")) {
+					if (!(isAttack)) {
+						System.out.println("撤退すると負けるよ？");
+						System.out.println("OK: \"Y\" , continue: \"N\"");
+						while (true) {
+							System.out.print(">>");
+							keyIn = stdIn.nextLine();
+							if (keyIn.equals("y") || keyIn.equals("Y")) {
+								break;
+							} else if (keyIn.equals("n") || keyIn.equals("N")) {
+								continue battle;
+							} else {
+								System.out.println("無効な入力");
+								
+							}
+						}
+						
+					}
 					battleLoop = false;
 					System.out.println("撤退");
 				}
@@ -164,7 +187,7 @@ public class Main {
 					if (R == 0) {
 						if (Px-Ex > 0 && gameMap[Ex+1][Ey] != 2 && gameMap[Ex+1][Ey] != 3) {
 							if (gameMap[Ex+1][Ey] == 1) {
-								battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn);
+								battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn, false);
 								if (battleWin) {
 									gameMap[Ex][Ey] = 0;
 									moveing = false;
@@ -185,7 +208,7 @@ public class Main {
 							}
 						} else if (Px-Ex < 0 && gameMap[Ex-1][Ey] != 2 && gameMap[Ex-1][Ey] != 3) {
 							if (gameMap[Ex-1][Ey] == 1) {
-								battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn);
+								battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn, false);
 								if (battleWin) {
 									gameMap[Ex][Ey] = 0;
 									moveing = false;
@@ -209,7 +232,7 @@ public class Main {
 					else if (R == 1) {
 						if (Py-Ey > 0 && gameMap[Ex][Ey+1] != 2 && gameMap[Ex][Ey+1] != 3) {
 							if (gameMap[Ex][Ey+1] == 1) {
-								battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn);
+								battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn, false);
 								if (battleWin) {
 									gameMap[Ex][Ey] = 0;
 									moveing = false;
@@ -230,7 +253,7 @@ public class Main {
 							}
 						} else if (Py-Ey < 0 && gameMap[Ex][Ey-1] != 2 && gameMap[Ex][Ey-1] != 3) {
 							if (gameMap[Ex][Ey-1] == 1) {
-								battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn);
+								battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn, false);
 								if (battleWin) {
 									gameMap[Ex][Ey] = 0;
 									moveing = false;
@@ -257,7 +280,7 @@ public class Main {
 				else if (Px-Ex != 0 && Py-Ey == 0) {
 					if (Px-Ex > 0 && gameMap[Ex+1][Ey] != 2 && gameMap[Ex+1][Ey] != 3) {
 						if (gameMap[Ex+1][Ey] == 1) {
-							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey,  stdIn);
+							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey,  stdIn, false);
 							if (battleWin) {
 								gameMap[Ex][Ey] = 0;
 								moveing = false;
@@ -278,7 +301,7 @@ public class Main {
 						}
 					} else if (Px-Ex < 0 && gameMap[Ex-1][Ey] != 2 && gameMap[Ex-1][Ey] != 3) {
 						if (gameMap[Ex-1][Ey] == 1) {
-							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn);
+							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn, false);
 							if (battleWin) {
 								gameMap[Ex][Ey] = 0;
 								moveing = false;
@@ -303,7 +326,7 @@ public class Main {
 				else if (Px-Ex == 0 && Py-Ey != 0) {
 					if (Py-Ey > 0 && gameMap[Ex][Ey+1] != 2 && gameMap[Ex][Ey+1] != 3) {
 						if (gameMap[Ex][Ey+1] == 1) {
-							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn);
+							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn, false);
 							if (battleWin) {
 								gameMap[Ex][Ey] = 0;
 								moveing = false;
@@ -324,7 +347,7 @@ public class Main {
 						}
 					} else if (Py-Ey < 0 && gameMap[Ex][Ey-1] != 2 && gameMap[Ex][Ey-1] != 3) {
 						if (gameMap[Ex][Ey-1] == 1) {
-							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn);
+							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn, false);
 							if (battleWin) {
 								gameMap[Ex][Ey] = 0;
 								moveing = false;
@@ -370,7 +393,7 @@ public class Main {
 				if (moveKey == 1) {
 					if (Ex-1 >= 0) {
 						if (gameMap[Ex-1][Ey] == 1) {
-							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn);
+							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn, false);
 							if (battleWin) {
 								gameMap[Ex][Ey] = 0;
 								moveing = false;
@@ -394,7 +417,7 @@ public class Main {
 				else if (moveKey == 3) {
 					if (Ex+1 < gameMap.length) {
 						if (gameMap[Ex+1][Ey] == 1) {
-							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn);
+							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn, false);
 							if (battleWin) {
 								gameMap[Ex][Ey] = 0;
 								moveing = false;
@@ -417,7 +440,7 @@ public class Main {
 				else if (moveKey == 4) {
 					if (Ey+1 < gameMap[Ex].length) {
 						if (gameMap[Ex][Ey+1] == 1) {
-							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn);
+							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn, false);
 							if (battleWin) {
 								gameMap[Ex][Ey] = 0;
 								moveing = false;
@@ -439,7 +462,7 @@ public class Main {
 				else if (moveKey == 2) {
 					if (Ey-1 >= 0) {
 						if (gameMap[Ex][Ey-1] == 1) {
-							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn);
+							battleWin = battleMode(gameMap, player, enemyData, Ex, Ey, stdIn, false);
 							if (battleWin) {
 								gameMap[Ex][Ey] = 0;
 								moveing =false;
@@ -535,7 +558,7 @@ public class Main {
 						gameMap[dx][Py] = 1;
 						player.move(moveMode);
 					} else if (gameMap[dx][Py] == 3) {
-						battleWin = battleMode(gameMap, player, enemyData, dx, Py, stdIn);
+						battleWin = battleMode(gameMap, player, enemyData, dx, Py, stdIn, true);
 						if (battleWin) {
 							gameMap[Px][Py] = 0;
 							gameMap[dx][Py] = 1;
@@ -563,7 +586,7 @@ public class Main {
 						gameMap[Px][dy] = 1;
 						player.move(moveMode);
 					}else if (gameMap[Px][dy] == 3) {
-						battleWin = battleMode(gameMap, player, enemyData, Px, dy, stdIn);
+						battleWin = battleMode(gameMap, player, enemyData, Px, dy, stdIn, true);
 						if (battleWin) {
 							gameMap[Px][Py] = 0;
 							gameMap[Px][dy] = 1;
@@ -600,6 +623,17 @@ public class Main {
 			} else {
 				System.out.println("err:main_moveEnemy");
 			}
+		}
+		
+		static int calculateDamage (int ATK, double per) {
+			Random rand = new Random();
+			int F = 0;
+			if (rand.nextBoolean()) {
+				F = 1;
+			} else {
+				F = -1;
+			}
+			return ATK + rand.nextInt((int)(ATK*per))*F;
 		}
 		
 		public static void main(String[] args) {
@@ -801,10 +835,11 @@ public class Main {
  * ・checkAllEnemy			;enemyDataから敵がマップに残っているかどうか調べる処理、Boolean型で返す
  * ・checkPlayer			;gameMapからプレイヤーが存在するかどうか調べる処理、Boolean型で返す
  * ・enemyChasePlayerMuiti	;moveEnemyMultiの内部メソッド。enemyChasePlayerを複数の敵に対応できるように改良した処理。
- * ・onlyMoveOneEnemyRandom	;enemyChasePlayerMuitiの内部メソッド。戦闘を発生させずに、敵をランダムに動かす処理。
+ * ・moveEnemyRandom		;単体の敵をランダムに動かす処理。
  * ・getEnemyNumber			;[内部処理] 入力された敵の座標から，敵の番号を返すメソッド．
  * ・randomSetItem			;アイテムをマップ上にランダムにセットするメソッド．int[][]アイテムデータを返す．
  * ・showItemData			;アイテムデータを表示するメソッド．
  * ・useItem				;プレイヤーがアイテムを使う処理．アイテム使用時の効果を設定できる
  * ・makeSeed				;入力値が0の場合，シード値(0～100000)を作るメソット．入力値がそれ以外は入力値を返す．
+ * ・calculateDamage		:入力されたダメージを"per"分ランダムに増減して返す処理．
  */
