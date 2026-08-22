@@ -3,8 +3,8 @@ import java.util.Scanner;
 
 public class Main {
 	//1番下にゲームの操作説明やソースコードの説明
-		static void moveEnemyMulti (int[][] gameMap, Player player, Enemy[] enemyData, int Ec, Scanner stdIn) {
-			for (int i = 0; i < Ec; i++) {
+		static void moveEnemyMulti (int[][] gameMap, Player player, Enemy[] enemyData, Scanner stdIn) {
+			for (int i = 0; i < enemyData.length; i++) {
 				if (enemyData[i].IsAlive()) {
 					int Ex = enemyData[i].getEx();
 					int Ey = enemyData[i].getEy();
@@ -19,10 +19,10 @@ public class Main {
 			}
 		}
 		
-		static boolean enemyScanPlayerMuiti (int[][] gameMap, Enemy[] enemyData, int Ec) {
+		static boolean enemyScanPlayerMuiti (int[][] gameMap, Enemy[] enemyData) {
 			boolean hit = false;		//敵の周囲1マスにプレイヤーがいるかどうか
 			
-			enemyScanPlayer:for (int i = 0; i < Ec; i++) {
+			enemyScanPlayer:for (int i = 0; i < enemyData.length; i++) {
 				if (enemyData[i].IsAlive()) {
 					int Ex = enemyData[i].getEx();
 					int Ey = enemyData[i].getEy();
@@ -640,53 +640,85 @@ public class Main {
 			// TODO 自動生成されたメソッド・スタブ
 			Scanner stdIn = new Scanner(System.in);
 			System.out.print("マップの広さ(x):");
-			int x = stdIn.nextInt();
-			//int x = 5;
-			//System.out.println("x=5");
-			System.out.print("マップの広さ(y):");
-			int y = stdIn.nextInt();
-			//int y = 5;
-			//System.out.println("y=5");
-			System.out.print("障害物(#)の数:");
-			int n = stdIn.nextInt();
-			//int n = 0;
-			//System.out.println("n=0");
-			System.out.print("敵の数:");
-			int Ec = stdIn.nextInt();
-			//int Ec = 2;
-			//System.out.println("Ec=2");
-			System.out.print("アイテム($)の数:");
-			int itemCount = stdIn.nextInt();
+			String stageselect = stdIn.nextLine();
+			int x = -1;
+			int y = -1;
+			int n = -1;
+			int Ec = -1;
+			int itemCount = -1;
+			int inSeed = 0;
+			Player player = null;
+			Enemy[] EnemyData = null;
+			int[][] gameMap = null;
+			int[][] ItemData = null;
 			
-			System.out.print("シード値:");
-			int inSeed = stdIn.nextInt();
+			if (stageselect != null && stageselect.matches("-?\\d+")) { // 正負の整数を許可
+				////マップの作成////
+				x = Integer.parseInt(stageselect);
+				//int x = stdIn.nextInt();
+				//int x = 5;
+				//System.out.println("x=5");
+				System.out.print("マップの広さ(y):");
+				y = stdIn.nextInt();
+				//int y = 5;
+				//System.out.println("y=5");
+				System.out.print("障害物(#)の数:");
+				n = stdIn.nextInt();
+				//int n = 0;
+				//System.out.println("n=0");
+				System.out.print("敵の数:");
+				Ec = stdIn.nextInt();
+				//int Ec = 2;
+				//System.out.println("Ec=2");
+				System.out.print("アイテム($)の数:");
+				itemCount = stdIn.nextInt();
+				
+				System.out.print("シード値:");
+				inSeed = stdIn.nextInt();
+				if (x * y < n+Ec+itemCount) {
+					System.out.println("error");
+					return;
+				}
+				String space = stdIn.nextLine();
+				int playerHP = 100;	//プレイヤーのHP
+				int playerATK = 30;	//プレイヤーの攻撃力
+				player = new Player(playerHP, playerATK);
+				
+				int seed = makeSeed(inSeed);
+				System.out.println("シード値: " + seed);
+				
+				gameMap = GameMap.make(x, y, n, seed);
+				gameMap = GameMap.RandomSetEnemy(gameMap, Ec, seed);
+				//GameMap GameMap = new GameMap(x, y, n, seed);	//作成途中
+				
+				//敵データの生成//
+				EnemyData = Enemy.makeEnemyData(gameMap, Ec, seed);
+				//アイテムデータの作成//
+				ItemData = randomSetItem(gameMap, itemCount, seed);
+	        
+			} else {
+				while (true) {
+					Stage a = new Stage(stageselect);
+					if (Stage.checkStageKey(stageselect)) {
+						player = a.getPlayer();
+						EnemyData = a.getEnemyData();
+						gameMap = a.getGameMap();
+						ItemData = a.getItemData();
+						break;
+					} else {
+						System.out.println("入力されたステージは存在しません");
+						System.out.print("再度入力>>");
+						stageselect = stdIn.nextLine();
+					}
+				}
+				
+	        }
 			
-			if (x * y < n+Ec+itemCount) {
-				System.out.println("error");
-				return;
-			}
-			
-			int playerHP = 100;	//プレイヤーのHP
-			int playerATK = 30;	//プレイヤーの攻撃力
-			Player player = new Player(playerHP, playerATK);
-			
-			int seed = makeSeed(inSeed);
-			System.out.println("シード値: " + seed);
-			
-			int[][] gameMap = GameMap.make(x, y, n, seed);
-			gameMap = GameMap.RandomSetEnemy(gameMap, Ec, seed);
-			//GameMap GameMap = new GameMap(x, y, n, seed);	//作成途中
-			
-			//敵データの生成//
-			Enemy[] EnemyData = Enemy.makeEnemyData(gameMap, Ec, seed);
+			////初期表示////
 			Enemy.showData(EnemyData);
-			
-			int[][] ItemData = randomSetItem(gameMap, itemCount, seed);
-			
 			System.out.printf("HP:%d\n",player.getHP());
 			GameMap.show(gameMap,EnemyData,ItemData);
 			boolean gameLoop = true;
-			String space = stdIn.nextLine();
 			System.out.print(">");
 			String keyIn = stdIn.nextLine();
 			
@@ -694,9 +726,8 @@ public class Main {
 			boolean existEnemy;		//敵が存在しているかどうか
 			boolean existPleyer;	//プレイヤーが存在しているかどうか
 			int turn = 1;			//ターン数
-			//メインループ//
-			while (gameLoop) {
-				
+			
+			while (gameLoop) {//メインループ//
 				if (keyIn.equals("q")) {
 					gameLoop = false;
 					break;
@@ -717,9 +748,9 @@ public class Main {
 					//回復＆敵・味方の移動//
 					player.heal(5);
 					movePoint(gameMap, keyIn, player, EnemyData, stdIn, ItemData);
-					moveEnemyMulti(gameMap,player ,EnemyData, Ec, stdIn);
+					moveEnemyMulti(gameMap,player ,EnemyData, stdIn);
 					
-					boolean scan = enemyScanPlayerMuiti(gameMap, EnemyData, Ec);
+					boolean scan = enemyScanPlayerMuiti(gameMap, EnemyData);
 					if (scan) {
 						System.out.printf("<Turn:%d> [!] HP:%d\n",turn,player.getHP());
 					} else {
@@ -729,7 +760,7 @@ public class Main {
 					
 					//敵の存在判定//
 					existEnemy = Enemy.checkAllEnemy(EnemyData);
-					if (!existEnemy && Ec > 0) {
+					if (!existEnemy && EnemyData.length > 0) {
 						gameLoop = false;
 						System.out.println("全ての敵を撃破!");
 						break;
